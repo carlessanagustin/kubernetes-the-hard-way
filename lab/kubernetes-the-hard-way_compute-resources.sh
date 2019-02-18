@@ -2,12 +2,12 @@
 
 # Provisioning Compute Resources
 region_zone(){
-	gcloud config set project csanagustin-lfs258
+	# gcloud config set project <project_id>
 	gcloud config set compute/region us-west1
 	gcloud config set compute/zone us-west1-c
 }
 
-config(){
+list_config(){
 	gcloud config list
 }
 
@@ -22,6 +22,9 @@ create_subnet(){
 create_firewall_rules(){
 	gcloud compute firewall-rules create kubernetes-the-hard-way-allow-internal --allow tcp,udp,icmp --network kubernetes-the-hard-way --source-ranges 10.240.0.0/24,10.200.0.0/16
 	gcloud compute firewall-rules create kubernetes-the-hard-way-allow-external --allow tcp:22,tcp:6443,icmp --network kubernetes-the-hard-way --source-ranges 0.0.0.0/0
+}
+
+list_firewall_rules(){
 	gcloud compute firewall-rules list --filter="network:kubernetes-the-hard-way"
 }
 
@@ -68,3 +71,18 @@ create_workers(){
 list_instances(){
 	gcloud compute instances list
 }
+
+region_zone
+list_config
+
+create_network
+create_subnet
+
+create_firewall_rules
+list_firewall_rules
+
+create_public_ip
+
+create_controllers
+create_workers
+list_instances
