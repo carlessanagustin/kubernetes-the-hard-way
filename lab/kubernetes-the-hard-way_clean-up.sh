@@ -6,7 +6,7 @@ controller_worker_instances(){
     worker-0 worker-1 worker-2
 }
 
-delete_dxternal_load_balancer(){
+delete_external_load_balancer(){
   gcloud -q compute forwarding-rules delete kubernetes-forwarding-rule \
     --region $(gcloud config get-value compute/region)
   gcloud -q compute target-pools delete kubernetes-target-pool
@@ -30,3 +30,8 @@ delete_network_VPC(){
   gcloud -q compute networks subnets delete kubernetes
   gcloud -q compute networks delete kubernetes-the-hard-way
 }
+
+controller_worker_instances
+delete_external_load_balancer
+delete_firewall_rules
+delete_network_VPC

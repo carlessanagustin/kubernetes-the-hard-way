@@ -17,24 +17,24 @@ resources:
       - aescbc:
           keys:
             - name: key1
-              secret: ${ENCRYPTION_KEY}
+              secret: $ENCRYPTION_KEY
       - identity: {}
 EOF
 
 for instance in controller-0 controller-1 controller-2; do
-  gcloud compute scp encryption-config.yaml ${instance}:~/
+  gcloud compute scp encryption-config.yaml $instance:~/
 done
 
 ## The commands in this lab must be run on each controller instance: controller-0, controller-1, and controller-2.
 for instance in controller-0 controller-1 controller-2; do
-  gcloud compute scp kubernetes-the-hard-way_etcd.sh ${instance}:~/
-	gcloud compute ssh ${instance} --command "bash ~/kubernetes-the-hard-way_etcd.sh"
+  gcloud compute scp kubernetes-the-hard-way_etcd.sh $instance:~/
+	gcloud compute ssh $instance --command "bash ~/kubernetes-the-hard-way_etcd.sh"
 done
 
 ## The commands in this lab must be run on each controller instance: controller-0, controller-1, and controller-2.
 for instance in controller-0 controller-1 controller-2; do
-  gcloud compute scp kubernetes-the-hard-way_k8s-control-plane.sh ${instance}:~/
-	gcloud compute ssh ${instance} --command "bash ~/kubernetes-the-hard-way_k8s-control-plane.sh"
+  gcloud compute scp kubernetes-the-hard-way_k8s-control-plane.sh $instance:~/
+	gcloud compute ssh $instance --command "bash ~/kubernetes-the-hard-way_k8s-control-plane.sh"
 done
 
 gcloud compute scp kubernetes-the-hard-way_rbac-for-kubelet.sh controller-0:~/
@@ -78,8 +78,8 @@ Verify_Provision_GCP_Load_Balancer(){
 
 ## The commands in this lab must be run on each worker instance: worker-0, worker-1, and worker-2.
 for instance in worker-0 worker-1 worker-2; do
-  gcloud compute scp kubernetes-the-hard-way_k8s-worker-nodes.sh ${instance}:~/
-	gcloud compute ssh ${instance} --command "bash ~/kubernetes-the-hard-way_k8s-worker-nodes.sh"
+  gcloud compute scp kubernetes-the-hard-way_k8s-worker-nodes.sh $instance:~/
+	gcloud compute ssh $instance --command "bash ~/kubernetes-the-hard-way_k8s-worker-nodes.sh"
 done
 
 # Verification
@@ -112,15 +112,15 @@ kubectl get componentstatuses
 
 # Provisioning Pod Network Routes
 for instance in worker-0 worker-1 worker-2; do
-  gcloud compute instances describe ${instance} \
+  gcloud compute instances describe $instance \
     --format 'value[separator=" "](networkInterfaces[0].networkIP,metadata.items[0].value)'
 done
 
 for i in 0 1 2; do
-  gcloud compute routes create kubernetes-route-10-200-${i}-0-24 \
+  gcloud compute routes create kubernetes-route-10-200-$i-0-24 \
     --network kubernetes-the-hard-way \
-    --next-hop-address 10.240.0.2${i} \
-    --destination-range 10.200.${i}.0/24
+    --next-hop-address 10.240.0.2$i \
+    --destination-range 10.200.$i.0/24
 done
 
 gcloud compute routes list --filter "network: kubernetes-the-hard-way"
