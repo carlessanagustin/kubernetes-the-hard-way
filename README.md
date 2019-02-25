@@ -18,6 +18,11 @@ cd lab
 
 THANK YOU kelseyhightower! GREAT TUTORIAL!
 
+## Added examples
+
+1. [ConfigMap examples](extras/configmap.md)
+
+
 ---
 
 from [kelseyhightower](https://github.com/kelseyhightower)
