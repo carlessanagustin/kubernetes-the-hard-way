@@ -235,6 +235,14 @@ lrwxrwxrwx    1 root     root            13 Feb 24 20:19 GASGAS -> ..data/GASGAS
 
 * clean up: `kubectl delete pod test-pod && kubectl delete cm from-literal`
 
+## update configmap
+
+```shell
+kubectl create configmap <cm_name> \
+    <values --from-file and/or --from-literal> \
+    --dry-run -o yaml | kubectl replace configmap <cm_name> -f -
+```
+
 ## more information
 
 * https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/

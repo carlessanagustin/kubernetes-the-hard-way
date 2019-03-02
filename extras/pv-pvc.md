@@ -1,5 +1,6 @@
-# NFS Persistent Volumes
+# NFS Persistent Volumes example
 
+* check present status: `kubectl get deploy,pod,pv,pvc -o wide`
 * requirements
 
 ```shell
@@ -14,6 +15,7 @@ sudo bash -c "echo 'this is a test' > $NFS_FOLDER/lala"
 * create
 
 ```shell
+# A PersistentVolume (PV) is a piece of storage in the cluster that has been provisioned by an administrator.
 cat << EOF > pv.yaml
 apiVersion: v1
 kind: PersistentVolume
@@ -32,6 +34,7 @@ spec:
     server: k8s-master-001
 EOF
 
+# A PersistentVolumeClaim (PVC) is a request for storage by a user
 cat << EOF > pvc.yaml
 kind: PersistentVolumeClaim
 apiVersion: v1
@@ -78,4 +81,27 @@ kubectl create -f nfs-pod.yaml
 kubectl delete -f nfs-pod.yaml
 kubectl delete -f pvc.yaml
 kubectl delete -f pv.yaml
+```
+
+* more information: https://kubernetes.io/docs/concepts/storage/persistent-volumes/
+
+## Troubleshooting
+
+* show NFS publications: `showmount -e k8s-master-001`
+
+## ResourceQuota
+
+```shell
+# A resource quota provides constraints that limit aggregate resource consumption per namespace.
+cat << EOF > rq.yaml
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: storage-rq
+  namespace: limits
+spec:
+  hard:
+    persistentvolumeclaims: 10
+    requests.storage: 500Mi
+EOF
 ```
