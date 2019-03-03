@@ -1,26 +1,31 @@
 # Authentication and Authorization
 
-* User setup
+* user setup
 
 ```shell
 USER_NAME=DevDan
-sudo useradd -m -d /home/$USER_NAME -s /bin/bash $USER_NAME
+CERTS_DIR=/home/$USER_NAME
+sudo useradd -m -d $CERTS_DIR -s /bin/bash $USER_NAME
 sudo passwd $USER_NAME
+sudo cp /etc/kubernetes/pki/ca.crt $CERTS_DIR
+sudo cp /etc/kubernetes/pki/ca.key $CERTS_DIR
+```
 
+* change user
+
+```shell
 su - $USER_NAME
 USER_NAME=DevDan
-SERVER=https://34.76.29.72:6443
-# OR kubectl cluster-info | grep master | cut -d" " -f 6
-CERTS_DIR=/home/DevDan/keys
+CERTS_DIR=/home/$USER_NAME
 NAMESPACE=development
 CLUSTER=kubernetes
+SERVER=https://34.76.29.72:6443
+# OR kubectl cluster-info | grep master | cut -d" " -f 6
 ```
 
 * certificates
 
 ```shell
-mkdir $CERTS_DIR && cd $CERTS_DIR
-
 openssl genrsa -out $USER_NAME.key 2048
 
 openssl req -new \
@@ -59,7 +64,7 @@ cat << EOF | kubectl create -f -
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: developer
+  name: developer-role
   namespace: development
 rules:
 - apiGroups: [ "", "extensions", "apps" ]
@@ -79,7 +84,7 @@ subjects:
   apiGroup: ""
 roleRef:
   kind: Role
-  name: developer
+  name: developer-role
   apiGroup: ""
 EOF
 kubectl --context=DevDan-context get pods
